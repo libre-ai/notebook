@@ -36,6 +36,14 @@ Expected next evidence:
 
 Dogfooding claims should stay backed by visible commands, fixtures, CI workflows, generated reports, or linked docs.
 
+## Contributing
+
+See:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines;
+- [ROADMAP.md](ROADMAP.md) for current contribution priorities;
+- [issue templates](.github/ISSUE_TEMPLATE/) for bugs, docs issues, fixture/example requests, and design discussions.
+
 ## Usable today
 
 The repository documents the intended personal knowledge product boundary and how note context should feed the harness without becoming ingestion or orchestration infrastructure.

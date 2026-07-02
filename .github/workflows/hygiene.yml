@@ -22,6 +22,7 @@ jobs:
           test -s CONTRIBUTING.md
           test -s ROADMAP.md
           test -s SECURITY.md
+          test -s LICENSE
           test -s .github/CODEOWNERS
       - name: Secret pattern smoke
         run: |

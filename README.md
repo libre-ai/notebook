@@ -71,7 +71,8 @@ In this ecosystem, notes are not only a personal archive. They are structured co
 
 ## Does Not Own
 
-- Raw document extraction/OCR/import pipelines: belongs to Wrench.
+- Raw document extraction/OCR/import pipelines: belongs to `gear-loader`.
+- Client-platform primitives, tokens, accessibility, and native/web adapters: belong to Portal.
 - Agent orchestration and task execution: belongs to `cos-matic`.
 - Long-term memory substrate internals: belongs to `gear-memory`.
 - A separate “vault” product; privacy and local-first behavior are requirements of `rumble-note` itself.
@@ -79,7 +80,9 @@ In this ecosystem, notes are not only a personal archive. They are structured co
 ## Allowed Dependencies
 
 - Reads/writes through `gear-memory` for persistence/search when needed.
-- Calls Wrench tools for ingestion instead of embedding extraction logic.
+- Calls `gear-loader` for ingestion instead of embedding extraction logic.
+- Uses Wrench tools for inspection/validation evidence.
+- Uses Portal for reusable client-platform primitives when UI work starts.
 - Can use Bolt when notes trigger agentic workflows, spec generation, or learning activities.
 
 ## Product Vision Challenge

@@ -1,23 +1,24 @@
-# Rumble Note
+# rumble-note
 
-**Layer:** Rumble — Product  
-**Role:** local-first block-based personal knowledge system  
-**Mission:** help users capture, structure, connect, and reuse personal knowledge while feeding the agentic harness.
+**Couche** : Rumble
+**Rôle** : PKM local-first en blocs et export de contexte privé
+**deployment_class** : product-linkable
+**Maturité** : contract-first — specs seules/0 runtime ; `NoteContextExport` à écrire
+**Place dans la chaîne DoD** : doit produire un contexte personnel contrôlé pour Gear Memory et les handoffs, sans devenir ingestion ni orchestration.
+**Doctrine** : local-first et privé par défaut ; le produit garde l’UX, Gear garde le substrat.
+**Souveraineté** : licences MIT/Apache/MPL compatibles ; pas d’AGPL/SSPL dans la chaîne versionnée.
+
+## Ce que ça fait
+
+Cadre un système de notes en blocs, références, graphes et exports contrôlés vers le harness. Aujourd’hui, c’est une spec : capture, édition, sync/offline et exports ne sont pas encore prêts.
+
+## Où ça se branche
+
+- Amont : connaissances personnelles utilisateur.
+- Aval : [gear-memory](https://github.com/constantin-jais/gear-memory) pour `SourceRef`/mémoire, [gear-loader](https://github.com/constantin-jais/gear-loader) pour import brut, Bolt/Rumble pour handoffs.
+- Contrats à produire : block model minimal, `NoteContextExport`, politiques de confidentialité.
 
 ---
-
-## Stack role
-
-- **Layer:** Rumble — Product.
-- **Role:** local-first block-based personal knowledge system.
-- **Mission:** help users capture, structure, connect, and reuse personal knowledge while feeding the agentic harness.
-- **Maturity:** `contract-first`.
-- **Scale-ready:** no — specs exist, but the runtime is not present locally.
-- **Current increment:** P0 specs.
-- **Learning value:** local-first PKM, private blocks, personal memory exports, and privacy-preserving handoff.
-- **Next quality step:** define the minimal block model and `NoteContextExport` privacy contract.
-
-See the ecosystem cockpit in [`constantin-jais/ecosystem/status.md`](https://github.com/constantin-jais/constantin-jais/blob/main/ecosystem/status.md).
 
 ## Dogfooding
 
@@ -73,7 +74,7 @@ In this ecosystem, notes are not only a personal archive. They are structured co
 
 - Raw document extraction/OCR/import pipelines: belongs to `gear-loader`.
 - Client-platform primitives, tokens, accessibility, and native/web adapters: belong to Portal.
-- Agent orchestration and task execution: belongs to `cos-matic`.
+- Agent orchestration and task execution: belongs to `bolt-cos-matic`.
 - Long-term memory substrate internals: belongs to `gear-memory`.
 - A separate “vault” product; privacy and local-first behavior are requirements of `rumble-note` itself.
 

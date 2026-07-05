@@ -1,6 +1,6 @@
 # rumble-note
 
-**Couche** : Rumble
+**Outil** : Rumble
 **Rôle** : PKM local-first en blocs et export de contexte privé
 **deployment_class** : product-linkable
 **Maturité** : contract-first — specs seules/0 runtime ; `NoteContextExport` à écrire
@@ -22,7 +22,7 @@ Cadre un système de notes en blocs, références, graphes et exports contrôlé
 
 ## Dogfooding
 
-This repository is part of the forge dogfooding loop: the ecosystem should use its own tools to make specs, maturity, contracts, releases, and product documentation observable.
+This repository is part of the Daidalos dogfooding loop: the ecosystem should use its own tools to make specs, maturity, contracts, releases, and product documentation observable.
 
 Current visible evidence:
 

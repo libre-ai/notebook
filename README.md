@@ -22,7 +22,7 @@ Cadre un système de notes en blocs, références, graphes et exports contrôlé
 
 ## Dogfooding
 
-This repository is part of the Daidalos dogfooding loop: the ecosystem should use its own tools to make specs, maturity, contracts, releases, and product documentation observable.
+This repository is part of the **Free AI** tool family — one tool, one job, stacked.
 
 Current visible evidence:
 

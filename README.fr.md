@@ -31,7 +31,7 @@ Notebook est reconstruit à partir de contrats verrouillés. Il **n'est pas enco
 | Intégration côté serveur ou au niveau app — consommer notebook-core        | ⏳ suite            | L'hôte Bun/React câble le composant WASM dans un worker navigateur ; Gate B approuvée sur fixtures uniquement                                                                                                                                      |
 | Interface hors ligne, sélection d'export, flux sauvegarde/restauration     | ⏳ en cours         | Éditeur accessible au clavier, aperçu du contexte, génération déterministe d'export, flux de récupération                                                                                                                                          |
 
-Ce dépôt est `private` jusqu'à ce qu'un audit de sécurité autorise sa réouverture publique (vague 4). **Cible de référence :** SiYuan ([https://github.com/siyuan-note/siyuan](https://github.com/siyuan-note/siyuan)) — atteinte par une architecture local-first portable, export déterministe et prioritaire hors ligne plutôt que par la découverte sync/cloud.
+Ce dépôt est une réserve publique, volontairement sans code produit jusqu'à l'activation (vague 4). **Cible de référence :** SiYuan ([github.com/siyuan-note/siyuan](https://github.com/siyuan-note/siyuan)) — atteinte par une architecture local-first portable, export déterministe et prioritaire hors ligne plutôt que par la découverte sync/cloud.
 
 ## Comment ça fonctionne
 

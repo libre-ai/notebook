@@ -31,7 +31,7 @@ Notebook is being rebuilt from locked contracts. It is **not released yet**; the
 | Server-side or app-level integration — consume notebook-core    | ⏳ next          | Bun/React host wires WASM component in browser worker; gate B approved on fixtures only                                                                                                                                   |
 | Offline UI, export selection, backup/restore flow               | ⏳ in progress   | Keyboard-accessible editor, context preview, deterministic export generation, recovery flow                                                                                                                               |
 
-This repository is `private` until a security audit clears it for public reopening (wave 4). **Benchmark target:** SiYuan ([https://github.com/siyuan-note/siyuan](https://github.com/siyuan-note/siyuan)) — reached through portable local-first blocks, deterministic export, and offline-first architecture rather than sync/cloud discovery.
+This repository is a public reserved home, intentionally without product code until activation (wave 4). **Benchmark target:** SiYuan ([github.com/siyuan-note/siyuan](https://github.com/siyuan-note/siyuan)) — reached through portable local-first blocks, deterministic export, and offline-first architecture rather than sync/cloud discovery.
 
 ## How it works
 

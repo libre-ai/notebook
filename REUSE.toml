@@ -1,7 +1,21 @@
 version = 1
 
+# This repository carries no application and no product runtime code: the
+# product boundary, the roadmap, the security and contribution policies and the
+# readiness records are editorial documentation and first-party project records.
+# Annotations follow the canonical policy in libre-ai/libre-ai/LICENSING.md;
+# the last matching annotation wins within this file.
 [[annotations]]
-path = ["**"]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Constantin Jais"
-SPDX-License-Identifier = "MIT"
+path = ["*.md", "**/*.md", "docs/**"]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Libre AI contributors"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# First-party software by default, matching the canonical `.github/**`
+# annotation. This deliberately also covers the issue templates and the
+# repository card: they are forge inputs, not editorial documents.
+[[annotations]]
+path = [".github/**", ".gitignore"]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Libre AI contributors"
+SPDX-License-Identifier = "EUPL-1.2"

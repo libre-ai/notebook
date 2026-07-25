@@ -67,4 +67,9 @@ To follow progress or contribute, open issues and pull requests in [`libre-ai/li
 
 ## License
 
-EUPL-1.2.
+Multi-licence, declared per path in [`REUSE.toml`](REUSE.toml) and summarized in [`LICENSE`](LICENSE):
+
+- **CC-BY-4.0** — this README and its French counterpart, the roadmap, the security and contribution policies, and the readiness records under `docs/`;
+- **EUPL-1.2** — the files under `.github/` and `.gitignore`.
+
+The canonical policy is [`LICENSING.md`](https://github.com/libre-ai/libre-ai/blob/main/LICENSING.md) in the base repository. Product runtime code lives there and is EUPL-1.2. Historical revisions of this repository published under MIT remain available under those terms; no previous licence grant is withdrawn.

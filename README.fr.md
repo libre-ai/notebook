@@ -67,4 +67,9 @@ Pour suivre l'avancement ou contribuer, ouvrez issues et pull requests dans [`li
 
 ## Licence
 
-EUPL-1.2.
+Multi-licence, déclarée par chemin dans [`REUSE.toml`](REUSE.toml) et résumée dans [`LICENSE`](LICENSE) :
+
+- **CC-BY-4.0** — ce README et sa version anglaise, la roadmap, les politiques de sécurité et de contribution, et les relevés de maturité sous `docs/` ;
+- **EUPL-1.2** — les fichiers sous `.github/` et `.gitignore`.
+
+La politique canonique est [`LICENSING.md`](https://github.com/libre-ai/libre-ai/blob/main/LICENSING.md) dans le dépôt de base. Le code produit y vit et est en EUPL-1.2. Les révisions de ce dépôt publiées antérieurement sous MIT restent disponibles selon ces termes ; aucune concession de licence antérieure n'est retirée.

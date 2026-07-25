@@ -65,7 +65,7 @@ Only use that command when the path exists in this repository.
 
 ## Developer Certificate of Origin
 
-Contributions use the [Developer Certificate of Origin 1.1](https://developercertificate.org/) prospectively. Sign every commit with `git commit -s`. The sign-off certifies your right to submit under the existing MIT license and does not relicense history.
+Contributions use the [Developer Certificate of Origin 1.1](https://developercertificate.org/) prospectively. Sign every commit with `git commit -s`. The sign-off certifies your right to submit under the licence already declared for each covered file in `REUSE.toml`, and does not relicense history.
 
 ## Pull request guidelines
 
@@ -100,7 +100,7 @@ New dependencies must be:
 - permissive open source where possible: MIT, Apache-2.0, BSD, ISC, or MPL-2.0 preferred;
 - compatible with self-hosting and local development;
 - justified in the issue or pull request;
-- accepted by the repository license and supply-chain checks when present;
+- accepted by the outbound licences declared in `REUSE.toml` and by supply-chain checks when present;
 - free from default telemetry, hidden network calls, and unnecessary SaaS coupling.
 
 Discuss before adding:

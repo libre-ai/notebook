@@ -1,0 +1,95 @@
+# Fiche d'état du projet — autorité de l'état depuis ADR-0020 (design §6.2).
+# La section statut du README est générée depuis cette fiche (sentinelles),
+# jamais éditée à la main ; l'avancement est calculé, jamais déclaré.
+schema_version: libre-ai.project.v1
+project: notebook
+repository: libre-ai/notebook
+kind: product
+layer: couche-1
+statement:
+  for: "toute personne qui construit une base de connaissances personnelle"
+  who_faces: "des outils de prise de notes qui envoient ses données dans le nuage et l'y enferment"
+  enables: "capturer, organiser et retrouver ses notes entièrement en local, et n'exporter que ce qu'elle choisit"
+  producing:
+    - "un espace de notes local, chiffrable, dont chaque export est un choix explicite"
+  without_depending_on:
+    - "aucun serveur distant, aucune télémétrie, aucun compte"
+summary: "Espace de connaissances local et privé par défaut, export de contexte contrôlé (couche 1)."
+current_situation: >-
+  L'application Notebook, née dans le hub et greffée ici avec son histoire (γ 3.5), installe et teste verte sur les briques épinglées de la constellation ; le crate notebook-core (frontière WIT, patch aes audité) vit dans ce workspace, son intégration WASM dans les parcours de l'application reste à faire.
+scope:
+  - "capture, organisation et recherche de notes en local"
+  - "export de contexte contrôlé et explicite"
+  - "moteur notebook-core derrière une frontière WIT"
+non_goals:
+  - "synchronisation cloud"
+  - "télémétrie"
+  - "runtime de plugins"
+dependencies:
+  - on: libre-ai/ui
+    why: "composants d'interface du système de design"
+    pinned: "git-dep épinglée par SHA dans le manifest de ce repo"
+  - on: libre-ai/web-platform
+    why: "socle applicatif Bun.serve + React"
+    pinned: "git-dep épinglée par SHA dans le manifest de ce repo"
+  - on: libre-ai/contracts
+    why: "autorité des contrats et golden vectors"
+    pinned: "git-dep épinglée par SHA dans le manifest de ce repo"
+  - on: libre-ai/governance
+    why: "gabarit de flotte et gates de qualité"
+    pinned: "git-dep épinglée par SHA dans le manifest de ce repo"
+maturity: usable
+confidence: medium
+exposure: spec-published
+freshness:
+  last_verified_on: "2026-07-30"
+hypothesis: >
+  A local-only, private-by-default knowledge workspace with controlled
+  context export covers the core capture-organize-retrieve loop of
+  SiYuan-class tools without cloud sync, telemetry or a plugin runtime.
+evidence_required:
+  - parity audit against the 143-feature SiYuan map (docs/parity/audits/PARITY-notebook-siyuan.md)
+  - the 6 T1 core-parity items shipped with verifiable evidence
+  - owner arbitration recorded on the 6 non-goal conflicts (sync, collaboration, publish, RAG, plugins, revocation)
+promotion_criteria:
+  - to: usable-verifiable
+    when: covered traits >= 71 of 143 (all 42 ABSENT-T1 closed) and Gate B evidence green
+  - to: proven
+    when: covered traits >= 100 of 143 across two consecutive parity audits
+kill_predicates:
+  - id: parity-stagnation
+    predicate: covered_traits < 60 of 143
+    window: two consecutive parity audits after wave-4 activation
+    source: docs/parity/audits/PARITY-notebook-siyuan.md
+  - id: sovereignty-breach
+    predicate: cloud sync, telemetry or a plugin runtime enters the covered set
+    source: docs/parity/audits/PARITY-notebook-siyuan.md
+benchmark:
+  product: SiYuan
+  url: https://github.com/siyuan-note/siyuan
+scope_stability: stable
+phases:
+  - id: activation
+    title: Activation multi-repo (γ 3.5)
+    exit_criteria:
+      - id: graft-green
+        text: Contenu greffé depuis le hub avec son histoire, workspace autonome vert en CI réelle, description dégelée.
+        weight: 2
+        status: accepted
+        evidence:
+          date: "2026-07-30"
+          reference: "gate-acceptance-log 2026-07-30 (ligne 3.5), PR hub #286"
+  - id: engine
+    title: Moteur notebook-core dans l'application
+    exit_criteria:
+      - id: engine-done
+        text: Le composant WASM notebook-core-v2 sert les parcours de capture et d'export dans l'application, conformité aux golden vectors en CI.
+        weight: 4
+        status: pending
+  - id: exposure
+    title: Exposition vérifiable
+    exit_criteria:
+      - id: promotion-met
+        text: Les conditions de promotion vers usable-verifiable déclarées par cette fiche (promotion_criteria) sont réunies et vérifiées.
+        weight: 4
+        status: pending

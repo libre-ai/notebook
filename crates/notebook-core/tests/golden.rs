@@ -147,7 +147,7 @@ struct NumericCase {
 
 fn load_vectors() -> Vectors {
     let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../contracts/fixtures/notebook-core-v2/golden-vectors.v1.json");
+        .join("../../node_modules/@libre-ai/contracts-authority/contracts/fixtures/notebook-core-v2/golden-vectors.v1.json");
     serde_json::from_slice(&std::fs::read(path).unwrap()).unwrap()
 }
 

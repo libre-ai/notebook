@@ -19,3 +19,18 @@ path = [".github/**", ".gitignore"]
 precedence = "closest"
 SPDX-FileCopyrightText = "2026 Libre AI contributors"
 SPDX-License-Identifier = "EUPL-1.2"
+
+# Grafted hub content and workspace bootstrap (ADR-0020, γ 3.5): EUPL-1.2
+# like the product, SPDX headers on authored sources take precedence.
+[[annotations]]
+path = ["**"]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Libre AI contributors"
+SPDX-License-Identifier = "EUPL-1.2"
+
+# Audited third-party aes fork keeps its upstream licences (LICENSING.md).
+[[annotations]]
+path = ["third_party/rustcrypto-aes-0.8.4/**"]
+precedence = "override"
+SPDX-FileCopyrightText = "RustCrypto Developers"
+SPDX-License-Identifier = "LicenseRef-ThirdParty-Notices"

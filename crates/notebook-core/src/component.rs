@@ -1,6 +1,6 @@
 wit_bindgen::generate!({
     world: "notebook-core",
-    path: "../../contracts/wit/notebook-core-v2",
+    path: "../../vendored/wit/notebook-core-v2",
 });
 
 use self::exports::libre_ai::notebook_core::api as wit_api;

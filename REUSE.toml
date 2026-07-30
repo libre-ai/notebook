@@ -34,3 +34,11 @@ path = ["third_party/rustcrypto-aes-0.8.4/**"]
 precedence = "override"
 SPDX-FileCopyrightText = "RustCrypto Developers"
 SPDX-License-Identifier = "LicenseRef-ThirdParty-Notices"
+
+# Documentation keeps the frozen-home CC-BY-4.0 grant (re-declared after
+# the graft catch-all so it keeps precedence in every reuse version).
+[[annotations]]
+path = ["*.md", "**/*.md", "docs/**"]
+precedence = "closest"
+SPDX-FileCopyrightText = "2026 Libre AI contributors"
+SPDX-License-Identifier = "CC-BY-4.0"

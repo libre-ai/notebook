@@ -16,7 +16,7 @@ statement:
     - "aucun serveur distant, aucune télémétrie, aucun compte"
 summary: "Espace de connaissances local et privé par défaut, export de contexte contrôlé (couche 1)."
 current_situation: >-
-  L'application Notebook, née dans le hub et greffée ici avec son histoire (γ 3.5), installe et teste verte sur les briques épinglées de la constellation ; le crate notebook-core (frontière WIT, patch aes audité) vit dans ce workspace, son intégration WASM dans les parcours de l'application reste à faire.
+  L'application Notebook, née dans le hub et greffée ici avec son histoire (γ 3.5), installe et teste verte sur les briques épinglées de la constellation ; le crate notebook-core (frontière WIT, patch aes audité) vit dans ce workspace. Le domaine bloc (apps/notebook/src/domain/block.ts) n'a aujourd'hui aucun appelant hors de ses propres tests ; l'unique écran produit (apps/notebook/src/ui/notebook-app.tsx) est le host de sauvegarde/restauration Gate B (fixture publique), pas un écran de capture. L'intégration WASM dans les parcours réels de l'application reste à faire.
 scope:
   - "capture, organisation et recherche de notes en local"
   - "export de contexte contrôlé et explicite"
@@ -42,28 +42,48 @@ maturity: usable
 confidence: medium
 exposure: spec-published
 freshness:
-  last_verified_on: "2026-07-30"
+  last_verified_on: "2026-08-18"
 hypothesis: >
   A local-only, private-by-default knowledge workspace with controlled
   context export covers the core capture-organize-retrieve loop of
   SiYuan-class tools without cloud sync, telemetry or a plugin runtime.
 evidence_required:
-  - parity audit against the 143-feature SiYuan map (docs/parity/audits/PARITY-notebook-siyuan.md)
-  - the 6 T1 core-parity items shipped with verifiable evidence
+  - >-
+    real-data dogfooding report following NOTEBOOK_BACKUP_FEATURE_ENABLED
+    activation once L1-L5 land (phase real-data-activation, L6)
+  - >-
+    the 6 T1 core-parity items (phase parity-t1, L7) each shipped with a
+    freshly dated PARITY audit measuring delivered code, not spec coverage
+    (libre-ai/governance:docs/parity/audits/PARITY-notebook-siyuan.md,
+    section "T1 Parité-Cœur")
   - owner arbitration recorded on the 6 non-goal conflicts (sync, collaboration, publish, RAG, plugins, revocation)
 promotion_criteria:
   - to: usable-verifiable
-    when: covered traits >= 71 of 143 (all 42 ABSENT-T1 closed) and Gate B evidence green
+    when: >-
+      real-data-activation (L6) evidence is accepted — NOTEBOOK_BACKUP_FEATURE_ENABLED
+      activated only after L1-L5 evidence, with a dogfooding report on real
+      content, not the public Gate B fixture — and all 6 T1 core-parity items
+      (parity-t1, L7) are shipped with a freshly dated PARITY audit each. This
+      is the v1 target; the 143-feature SiYuan map is not (transverse "parity
+      after dogfooding" principle — see phase parity-t1 note).
   - to: proven
-    when: covered traits >= 100 of 143 across two consecutive parity audits
+    when: >-
+      T2 horizon, deferred from v1: covered traits >= 71 of 143 (all 42
+      ABSENT-T1 items closed, not only the 6 T1 core-parity items) across two
+      consecutive parity audits taken after usable-verifiable is reached.
 kill_predicates:
   - id: parity-stagnation
-    predicate: covered_traits < 60 of 143
-    window: two consecutive parity audits after wave-4 activation
-    source: docs/parity/audits/PARITY-notebook-siyuan.md
+    predicate: >-
+      covered_traits < 29 of 143 — regression below the already-COUVERT
+      baseline (Décompte, libre-ai/governance:docs/parity/audits/PARITY-notebook-siyuan.md).
+      The former 60-of-143 floor assumed a 71-of-143 v1 target; re-anchored
+      now that v1 targets only the 6 T1 items (roughly 35 of 143), a 60 floor
+      would fire on the day v1 is reached.
+    window: two consecutive parity audits after real-data-activation (L6) evidence is accepted
+    source: libre-ai/governance:docs/parity/audits/PARITY-notebook-siyuan.md
   - id: sovereignty-breach
     predicate: cloud sync, telemetry or a plugin runtime enters the covered set
-    source: docs/parity/audits/PARITY-notebook-siyuan.md
+    source: libre-ai/governance:docs/parity/audits/PARITY-notebook-siyuan.md
 benchmark:
   product: SiYuan
   url: https://github.com/siyuan-note/siyuan
@@ -71,6 +91,18 @@ scope_stability: stable
 phases:
   - id: activation
     title: Activation multi-repo (γ 3.5)
+    note: >-
+      Distinct from the data-path activation gate (phase real-data-activation,
+      L6 — NOTEBOOK_BACKUP_FEATURE_ENABLED). Gate B evidence (apps/notebook/README.md,
+      docs/apps/notebook.md, tools/qualification/notebook-core-v2/README.md)
+      cites the pre-graft candidate `9ee3f8da65afce9bce8da98baac72c1aea8bd0ce`
+      (governance ACTIVATION-DOSSIER, PR hub #106, approved 2026-07-20) — not a
+      valid git object in this repository: git filter-repo rewrites commit
+      hashes when it extracts a subtree, so the hub-side SHA has no equivalent
+      here. Equivalence is carried by the graft commit
+      `3b1c10d6c5a308256b16d99fd05c425a4d7f237b` ("Merge the hub content graft —
+      general activation (ADR-0020, γ 3.5)", 2026-07-30), the same commit
+      .github/workflows/ci.yml pins as `dco_boundary`.
     exit_criteria:
       - id: graft-green
         text: Contenu greffé depuis le hub avec son histoire, workspace autonome vert en CI réelle, description dégelée.
@@ -80,16 +112,98 @@ phases:
           date: "2026-07-30"
           reference: "gate-acceptance-log 2026-07-30 (ligne 3.5), PR hub #286"
   - id: engine
-    title: Moteur notebook-core dans l'application
+    title: Moteur applicatif — bloc, capture, recherche
     exit_criteria:
-      - id: engine-done
-        text: Le composant WASM notebook-core-v2 sert les parcours de capture et d'export dans l'application, conformité aux golden vectors en CI.
-        weight: 4
+      - id: l1-block-domain-indexeddb
+        text: >-
+          Le domaine bloc (apps/notebook/src/domain/block.ts) est câblé à une
+          persistance IndexedDB réelle et appelé hors de ses propres tests ;
+          couvert par un e2e create→edit→link→search→delete.
+        weight: 2
         status: pending
-  - id: exposure
-    title: Exposition vérifiable
+      - id: l2-capture-edit-screen
+        text: >-
+          Un écran de capture/édition minimal existe dans l'application — au
+          lieu du seul écran actuel de sauvegarde/restauration Gate B.
+        weight: 1
+        status: pending
+      - id: l3-local-search-ui
+        text: La recherche locale (SearchLocalIndex) est montée dans l'interface, pas seulement dans le domaine.
+        weight: 1
+        status: pending
+  - id: controlled-export
+    title: Export de contexte contrôlé sur un bloc réel
     exit_criteria:
-      - id: promotion-met
-        text: Les conditions de promotion vers usable-verifiable déclarées par cette fiche (promotion_criteria) sont réunies et vérifiées.
-        weight: 4
+      - id: l4-context-export-on-real-block
+        text: >-
+          SelectContext, CreateContextExport et PreviewContextExport opèrent
+          sur un vrai bloc du domaine — aujourd'hui documentés dans
+          docs/apps/notebook.md sans aucune implémentation ni test.
+        weight: 2
+        status: pending
+      - id: l5-wasm-golden-vectors-on-export-path
+        text: >-
+          Le composant WASM notebook-core est intégré dans le chemin d'export
+          réel (au-delà du host de sauvegarde Gate B fixture-only), avec les
+          golden vectors de crates/notebook-core/tests/golden.rs vérifiés sur
+          CE chemin.
+        weight: 2
+        status: pending
+  - id: real-data-activation
+    title: Activation sur contenu réel (jalon dogfooding)
+    exit_criteria:
+      - id: l6-backup-flag-dogfooding-report
+        text: >-
+          Le flag NOTEBOOK_BACKUP_FEATURE_ENABLED (apps/notebook/src/backup/feature.ts)
+          n'est activé qu'une fois L1 à L5 acceptés, avec un rapport de
+          dogfooding sur du contenu réel — pas la fixture publique Gate B.
+        weight: 3
+        status: pending
+  - id: parity-t1
+    title: Parité T1 (cible v1)
+    note: >-
+      Rien dans evidence_required/promotion_criteria ne s'évalue avant L6
+      (jalon dogfooding) ; la cible v1 est ces 6 items T1, pas 71 sur 143 (qui
+      devient l'horizon T2 — voir promotion_criteria). Conforme au principe
+      transverse « la parité ne s'évalue qu'après dogfooding sur contenu réel »
+      (arbitrage owner 2026-08-18 — au 2026-08-18, aucun ADR ni PR mergé ou
+      ouvert dans libre-ai/governance ne porte ce titre ; cité par principe,
+      sans numéro, jusqu'à formalisation).
+    exit_criteria:
+      - id: l7a-unlinked-mentions-detection
+        text: >-
+          Détection de mentions non liées (T1 Parité-Cœur #1) livrée ; clôture
+          = nouvel audit PARITY daté mesurant le code livré sur cet item.
+        weight: 1
+        status: pending
+      - id: l7b-relationship-graph-visualization
+        text: >-
+          Visualisation du graphe de relations (T1 Parité-Cœur #2) livrée ;
+          clôture = nouvel audit PARITY daté mesurant le code livré sur cet
+          item.
+        weight: 1
+        status: pending
+      - id: l7c-custom-attributes-tags
+        text: >-
+          Attributs/tags personnalisés (T1 Parité-Cœur #3) livrés ; clôture =
+          nouvel audit PARITY daté mesurant le code livré sur cet item.
+        weight: 1
+        status: pending
+      - id: l7d-advanced-search-filters
+        text: >-
+          Recherche avancée + filtres (T1 Parité-Cœur #4) livrée ; clôture =
+          nouvel audit PARITY daté mesurant le code livré sur cet item.
+        weight: 1
+        status: pending
+      - id: l7e-context-export-text-html
+        text: >-
+          Export texte/HTML du contexte (T1 Parité-Cœur #5) livré ; clôture =
+          nouvel audit PARITY daté mesurant le code livré sur cet item.
+        weight: 1
+        status: pending
+      - id: l7f-undo-redo-local-limit
+        text: >-
+          Undo/redo avec limite locale (T1 Parité-Cœur #6) livré ; clôture =
+          nouvel audit PARITY daté mesurant le code livré sur cet item.
+        weight: 1
         status: pending

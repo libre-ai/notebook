@@ -44,6 +44,12 @@ scope.onmessage = async (event) => {
     const component = (await import(componentUrl)) as ComponentModule;
     const root = await component.instantiate(
       async (path) => {
+        // check-no-transmission allowlist entry (ADR-0012 D1): `path` comes from the
+        // generated WIT-bindgen component loader, not from user or network input, and
+        // resolves via `import.meta.url` of this same-origin module to a co-located
+        // static .wasm build artifact under /assets/. GET-only, same-origin, carries
+        // no user data and no cross-origin target. Any change to this call site must
+        // be re-reviewed against that guarantee before it can stay allowlisted.
         const response = await fetch(new URL(path, import.meta.url), { cache: "no-store" });
         if (!response.ok) throw new Error("core module unavailable");
         const module = await WebAssembly.compile(await response.arrayBuffer());

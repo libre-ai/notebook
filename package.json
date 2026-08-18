@@ -11,7 +11,7 @@
     "fast-uri": "4.1.2"
   },
   "devDependencies": {
-    "@libre-ai/governance": "github:libre-ai/governance#9cec3d575ca1af5af5ede4ca694eea84129c9f5e",
+    "@libre-ai/governance": "github:libre-ai/governance#33dcc5aa70949257618c1db1e4e608765721fbc9",
     "@libre-ai/contracts-authority": "github:libre-ai/contracts#ee144f03cf7d3deeda02a9fcd5e10377c2e99cb4",
     "@biomejs/biome": "2.5.3",
     "@types/bun": "1.3.14",
@@ -25,9 +25,10 @@
     "check:app": "bun run check:bun:runtime && bun install --cwd apps/notebook && bun test --cwd apps/notebook",
     "check:secret-scan": "bun run check:bun:runtime && bun node_modules/@libre-ai/governance/tools/quality/check-secret-scan.ts",
     "check:personal-data": "bun run check:bun:runtime && bun node_modules/@libre-ai/governance/tools/quality/check-personal-data-boundary.ts",
+    "check:no-transmission": "bun run check:bun:runtime && bun node_modules/@libre-ai/governance/tools/quality/check-no-transmission.ts --roots apps/notebook/src --allow apps/notebook/src/backup/notebook-core-worker.ts",
     "lint": "bun run check:bun:runtime && biome ci .",
     "pretest": "bun run check:bun",
     "test": "cargo test --locked",
-    "check": "bun run check:bun && bun run check:toolchain && bun run check:wit && bun run check:app && bun run check:secret-scan && bun run check:personal-data && bun run lint"
+    "check": "bun run check:bun && bun run check:toolchain && bun run check:wit && bun run check:app && bun run check:secret-scan && bun run check:personal-data && bun run check:no-transmission && bun run lint"
   }
 }

@@ -164,11 +164,11 @@ phases:
     note: >-
       Rien dans evidence_required/promotion_criteria ne s'évalue avant L6
       (jalon dogfooding) ; la cible v1 est ces 6 items T1, pas 71 sur 143 (qui
-      devient l'horizon T2 — voir promotion_criteria). Conforme au principe
-      transverse « la parité ne s'évalue qu'après dogfooding sur contenu réel »
-      (arbitrage owner 2026-08-18 — au 2026-08-18, aucun ADR ni PR mergé ou
-      ouvert dans libre-ai/governance ne porte ce titre ; cité par principe,
-      sans numéro, jusqu'à formalisation).
+      devient l'horizon T2 — voir promotion_criteria). Conforme à
+      libre-ai/governance:docs/adr/0027-parity-gates-fire-only-after-dogfooding.md
+      D1 (séquencement temporel : le dogfooding avant la parité, owner
+      arbitration 2026-08-18) — le renvoi par principe sans numéro qui
+      précédait cette mise à jour est résolu, l'ADR étant désormais mergé.
     exit_criteria:
       - id: l7a-unlinked-mentions-detection
         text: >-

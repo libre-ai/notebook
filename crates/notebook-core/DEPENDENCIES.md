@@ -16,7 +16,7 @@ All versions are exact workspace pins. `cargo deny check advisories licenses sou
 | `serde 1.0.229`, `serde_json 1.0.151` | runtime | workspace | MIT OR Apache-2.0 | strict typed envelope/context parsing with duplicate and unknown-field refusal |
 | `serde_jcs 0.2.0` | runtime | defaults | MIT OR Apache-2.0 | RFC 8785 serialization; dependency implementation remains a Gate R audit target |
 | `wit-bindgen 0.61.1` | runtime boundary | macros, realloc; no defaults/std/async | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | generated Component Model ABI from the locked v2 WIT |
-| `wasmparser 0.253.0`, `wit-component 0.253.0` | development only | defaults | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | encode and inspect the actual component imports/exports |
+| `wasmparser 0.258.0`, `wit-component 0.258.0` | development only | defaults | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | encode and inspect the actual component imports/exports |
 
 No runtime dependency supplies clock, randomness, network, filesystem, storage, environment, logging,
 thread pool, PHC string, or external service. The export-scoped id, salt, nonce, and 16-byte recovery secret are explicit host inputs.

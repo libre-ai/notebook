@@ -75,13 +75,19 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err("cannot replace an imported function".into());
     }
     let range = operator_range.ok_or("target function body not found")?;
-    if range.len() < 2 {
+    if range.end - range.start < 2 {
         return Err("target function body is too short for trap injection".into());
     }
+    // wasmparser 0.258.0 reports section offsets as u64 (wasm64 support); this tool only
+    // ever operates on an in-memory `Vec<u8>`, so narrow explicitly rather than truncate.
+    let start = usize::try_from(range.start)
+        .map_err(|_| "function body start offset exceeds addressable memory")?;
+    let end = usize::try_from(range.end)
+        .map_err(|_| "function body end offset exceeds addressable memory")?;
 
-    module[range.start] = 0x00; // unreachable
-    module[(range.start + 1)..(range.end - 1)].fill(0x01); // nop
-    module[range.end - 1] = 0x0b; // end
+    module[start] = 0x00; // unreachable
+    module[(start + 1)..(end - 1)].fill(0x01); // nop
+    module[end - 1] = 0x0b; // end
     validate(&module)?;
     fs::write(&output, &module)?;
 

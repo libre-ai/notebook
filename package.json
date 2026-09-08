@@ -31,6 +31,6 @@
     "pretest": "bun run check:bun",
     "test": "cargo test --locked",
     "check": "bun run check:bun && bun run check:toolchain && bun run check:wit && bun run check:app && bun run check:secret-scan && bun run check:personal-data && bun run check:no-transmission && bun run lint",
-    "check:component": "node scripts/check-component-encoding.ts"
+    "check:component": "bun run check:bun:runtime && node scripts/check-component-encoding.ts"
   }
 }

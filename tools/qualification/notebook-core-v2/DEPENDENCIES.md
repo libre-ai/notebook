@@ -8,6 +8,13 @@ It is Apache-2.0 with LLVM exception, open source under the Bytecode Alliance, a
 WebAssembly Component Model. It runs locally at build time, receives only the public compiled module,
 and is absent from product/browser runtime output. `bun audit` reports no advisory.
 
+Its vendored wasm-tools (wit-component 0.251.0) is an older decoder than the `wit-component` the
+workspace's `wit-bindgen` embeds metadata with, and the two pins move independently. The CI job
+"Rust quality" therefore runs `scripts/check-component-encoding.ts` on every pull request: it builds
+the locked wasm32 module and runs this package's own `componentNew` / `componentWit` /
+`transpileBytes` over it, so a crate bump the JS-side decoder refuses is red before merge rather than
+discovered at the next qualification run.
+
 Its preview shims share the same permissive licence but are not imported into the generated component:
 the build sets `wasiShim: false`, requires an empty transpiler import list, and verifies the generated
 core module has zero imports. Binaryen/OXC are build-only transitive packages; optimization and

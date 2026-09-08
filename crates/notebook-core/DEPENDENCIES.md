@@ -4,7 +4,7 @@ All versions are exact workspace pins. `cargo deny check advisories licenses sou
 
 | Crate | Scope | Features | Licence | Rationale |
 | --- | --- | --- | --- | --- |
-| `argon2 0.5.3` | runtime | `zeroize`; no defaults/alloc/password-hash/rand | MIT OR Apache-2.0 | RustCrypto Argon2id v19; caller-provided memory via `hash_password_into_with_memory` |
+| `argon2 0.6.0` | runtime | `zeroize`; no defaults/alloc/password-hash/rand | MIT OR Apache-2.0 | RustCrypto Argon2id v19; caller-provided memory via `hash_password_into_with_memory` |
 | `aes-gcm 0.10.3` | runtime | `aes`, `zeroize`; no defaults/alloc/getrandom | MIT OR Apache-2.0 | RustCrypto AES-256-GCM, detached 16-byte tag, in-place API |
 | `aes 0.8.4`, `ghash 0.5.1`, `polyval 0.6.2` | runtime feature anchors | `zeroize`; no defaults | MIT OR Apache-2.0 | force wiping of AES schedules plus GHASH/POLYVAL temporary and retained state; `aes` is patched locally as described below |
 | `base64 0.22.1` | runtime | `alloc`; no std default | MIT OR Apache-2.0 | strict RFC 4648 standard alphabet with decode/re-encode check |

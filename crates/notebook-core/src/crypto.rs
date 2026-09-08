@@ -13,6 +13,32 @@ use crate::error::ErrorCode;
 use crate::model::{ENVELOPE_SCHEMA_VERSION, EnvelopeKdf, KDF_ALGORITHM};
 use crate::validate::{GCM_TAG_BYTES, KEY_BYTES};
 
+// Compile-time proof of the wipe chain this crate relies on (K4, crypto at
+// rest): the AEAD and its block cipher must implement `ZeroizeOnDrop`. aes-gcm
+// 0.10 only wipes its temporary GHASH key, so this fails to compile there; a
+// future bump that drops the `zeroize` feature anywhere on the chain fails
+// here instead of silently keeping key schedules in memory.
+const _: () = {
+    const fn assert_zeroize_on_drop<T: zeroize::ZeroizeOnDrop>() {}
+    assert_zeroize_on_drop::<Aes256Gcm>();
+    assert_zeroize_on_drop::<aes::Aes256>();
+};
+
+// The fixsliced AES backend selects its word width through `cpubits!`
+// (block-ciphers#532); evaluating the same macro here yields the exact width
+// `aes` compiles with. wasm32 has 32-bit pointers but deterministic i64
+// arithmetic, and the 64-bit fixslice is the constant-time variant this crate
+// was qualified on — an upstream heuristic change surfaces here at compile
+// time rather than in a browser benchmark.
+cpubits::cpubits! {
+    16 | 32 => { const FIXSLICE_WORD_BITS: u32 = 32; }
+    64 => { const FIXSLICE_WORD_BITS: u32 = 64; }
+}
+const _: () = assert!(
+    !cfg!(target_arch = "wasm32") || FIXSLICE_WORD_BITS == 64,
+    "wasm32 must compile the 64-bit fixsliced AES backend"
+);
+
 const AAD_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/aad";
 const DIGEST_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/digest";
 const JCS_METADATA_RESERVE: usize = 1024;

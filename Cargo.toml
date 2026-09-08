@@ -13,6 +13,7 @@ aes = { version = "=0.8.4", default-features = false, features = ["zeroize"] }
 aes-gcm = { version = "=0.10.3", default-features = false, features = ["aes", "zeroize"] }
 argon2 = { version = "=0.6.0", default-features = false, features = ["zeroize"] }
 base64 = { version = "=0.22.1", default-features = false, features = ["alloc"] }
+cpubits = { version = "=0.1.1", default-features = false }
 ghash = { version = "=0.5.1", default-features = false, features = ["zeroize"] }
 polyval = { version = "=0.6.2", default-features = false, features = ["zeroize"] }
 serde = { version = "=1.0.229", features = ["derive"] }

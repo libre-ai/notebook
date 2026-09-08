@@ -78,6 +78,40 @@ jobs:
       # gate at all — the shipped configuration would be the untested one.
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --locked
+      # Component-encoding gate (scripts/check-component-encoding.ts). Nothing
+      # above compiles wasm32: `wit-bindgen` embeds the WIT world into the core
+      # module through `wit-component`, and the qualification harness then
+      # decodes that metadata with the wasm-tools build vendored inside
+      # `@bytecodealliance/jco-transpile` — two pins that move independently
+      # (Dependabot bumps the crates, the npm package carries its own
+      # wasm-tools). A crate bump that the JS-side decoder refuses would leave
+      # every gate above green. This step builds the locked wasm32 module and
+      # runs the harness's own `componentNew` / `componentWit` /
+      # `transpileBytes` calls over it, cross-checked by the Rust decoder.
+      #
+      # It runs under Node, not Bun: jco's preview2 shim spawns a worker on
+      # import that Bun rejects (`process.binding("tcp_wrap")`) AFTER the
+      # library has succeeded, so under Bun the exit code is 1 regardless of the
+      # verdict — unusable as a gate. Node is pinned the way Bun is above: exact
+      # version and archive digest, never the runner's pre-installed binary.
+      - name: Install archived Node toolchain
+        env:
+          NODE_VERSION: "26.8.1"
+          NODE_ARCHIVE_SHA256: "3e301118d7df53d563b7e96c1617545f26e2f76f9724be668d6cab65c15dda5d"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/node.tar.xz" \
+            "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz"
+          echo "${NODE_ARCHIVE_SHA256}  $RUNNER_TEMP/node.tar.xz" | sha256sum --check --strict
+          tar -xJf "$RUNNER_TEMP/node.tar.xz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/node-v${NODE_VERSION}-linux-x64/bin" >> "$GITHUB_PATH"
+      - name: Component encoding (wit-bindgen metadata through jco wasm-tools)
+        run: |
+          set -euo pipefail
+          test "$(node --version)" = "v26.8.1"
+          # rust-toolchain.toml lists the target; prove it landed before building.
+          rustup target list --installed | grep -qx wasm32-unknown-unknown
+          node scripts/check-component-encoding.ts
 
   dependency-policy:
     name: Dependency policy

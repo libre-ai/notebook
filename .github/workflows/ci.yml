@@ -49,6 +49,10 @@ jobs:
         run: |
           test "$(bun --revision)" = "1.4.0-canary.1+57f349f63"
           bun run check:toolchain
+      # `check:zeroize-chain` reads the resolved graph through
+      # `cargo metadata --locked`; the pinned toolchain must exist in this job
+      # too, not only in "Rust quality" — rust-toolchain.toml picks the version.
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable action
       - run: bun run check
 
   rust-quality:
@@ -78,6 +82,19 @@ jobs:
       # gate at all — the shipped configuration would be the untested one.
       - run: cargo clippy --all-targets --locked -- -D warnings
       - run: cargo test --locked
+      # wasm32 is the shipped target and nothing above compiles it: the
+      # `cpubits` width assertion, the `--cfg cpubits="64"` belt and the
+      # `AesGcm: ZeroizeOnDrop` proof in crypto.rs only mean something for
+      # wasm32-unknown-unknown, and `.cargo/config.toml` (rustflags) is only
+      # read for that target. BLOCKING — a red here is a different AES backend
+      # or a lost flag, not a style nit. `rustup target list` first: a missing
+      # target would make `cargo check` fail for the wrong reason.
+      - name: wasm32 — check and clippy with the qualification rustflags
+        run: |
+          set -euo pipefail
+          rustup target list --installed | grep -qx wasm32-unknown-unknown
+          cargo check --locked -p libre-ai-notebook-core --target wasm32-unknown-unknown
+          cargo clippy --locked -p libre-ai-notebook-core --target wasm32-unknown-unknown -- -D warnings
       # Component-encoding gate (scripts/check-component-encoding.ts). Nothing
       # above compiles wasm32: `wit-bindgen` embeds the WIT world into the core
       # module through `wit-component`, and the qualification harness then

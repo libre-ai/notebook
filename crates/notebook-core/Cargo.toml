@@ -17,14 +17,14 @@ default = []
 qualification-faults = []
 
 [dependencies]
-# Feature anchors ensure AES schedules and GHASH/POLYVAL state wipe on the WASM target.
+# `aes` stays a direct dependency for the compile-time `ZeroizeOnDrop` and
+# fixslice-width assertions in crypto.rs; the wipe chain below it is proven by
+# `scripts/check-zeroize-chain.ts`, not by direct feature anchors.
 aes.workspace = true
 aes-gcm.workspace = true
 argon2.workspace = true
 base64.workspace = true
 cpubits.workspace = true
-ghash.workspace = true
-polyval.workspace = true
 serde.workspace = true
 serde_jcs.workspace = true
 serde_json.workspace = true

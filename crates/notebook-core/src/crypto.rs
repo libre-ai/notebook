@@ -1,5 +1,5 @@
-use aes_gcm::aead::{AeadInPlace, KeyInit};
-use aes_gcm::{Aes256Gcm, Nonce, Tag};
+use aes_gcm::Aes256Gcm;
+use aes_gcm::aead::{AeadInOut, KeyInit, Nonce, Tag};
 use argon2::{Algorithm, Argon2, Block, Params, Version};
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
@@ -81,8 +81,9 @@ pub(crate) fn encrypt_in_place(
         .try_reserve_exact(GCM_TAG_BYTES)
         .map_err(|_| ErrorCode::ResourceLimitExceeded)?;
     let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| ErrorCode::InternalFailure)?;
+    let nonce = Nonce::<Aes256Gcm>::try_from(nonce).map_err(|_| ErrorCode::InternalFailure)?;
     let tag = cipher
-        .encrypt_in_place_detached(Nonce::from_slice(nonce), aad, plaintext.as_mut())
+        .encrypt_inout_detached(&nonce, aad, plaintext.as_mut_slice().into())
         .map_err(|_| ErrorCode::InternalFailure)?;
     plaintext.extend_from_slice(tag.as_slice());
     Ok(())
@@ -102,13 +103,12 @@ pub(crate) fn decrypt_in_place(
     let Ok(cipher) = Aes256Gcm::new_from_slice(key) else {
         return false;
     };
+    let Ok(nonce) = Nonce::<Aes256Gcm>::try_from(nonce) else {
+        return false;
+    };
+    let tag = Tag::<Aes256Gcm>::from(tag_bytes);
     cipher
-        .decrypt_in_place_detached(
-            Nonce::from_slice(nonce),
-            aad,
-            ciphertext_and_tag.as_mut(),
-            Tag::from_slice(&tag_bytes),
-        )
+        .decrypt_inout_detached(&nonce, aad, ciphertext_and_tag.as_mut_slice().into(), &tag)
         .is_ok()
 }
 

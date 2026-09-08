@@ -9,7 +9,7 @@ Pour toute personne qui construit une base de connaissances personnelle, qui ren
 <!-- libre-ai:project-status:begin -->
 <!-- Section générée depuis project.v1.yaml — ne pas éditer à la main. -->
 
-- Situation actuelle : L'application Notebook, née dans le hub et greffée ici avec son histoire (γ 3.5), installe et teste verte sur les briques épinglées de la constellation ; le crate notebook-core (frontière WIT, patch aes audité) vit dans ce workspace. Le domaine bloc (apps/notebook/src/domain/block.ts) n'a aujourd'hui aucun appelant hors de ses propres tests ; l'unique écran produit (apps/notebook/src/ui/notebook-app.tsx) est le host de sauvegarde/restauration Gate B (fixture publique), pas un écran de capture. L'intégration WASM dans les parcours réels de l'application reste à faire.
+- Situation actuelle : L'application Notebook, née dans le hub et greffée ici avec son histoire (γ 3.5), installe et teste verte sur les briques épinglées de la constellation ; le crate notebook-core (frontière WIT ; aes 0.9.3 du registre, fixslice 64 bits sur wasm32 tenu par cpubits — le fork audité a été retiré, ADR-0031 D1) vit dans ce workspace. Le domaine bloc (apps/notebook/src/domain/block.ts) n'a aujourd'hui aucun appelant hors de ses propres tests ; l'unique écran produit (apps/notebook/src/ui/notebook-app.tsx) est le host de sauvegarde/restauration Gate B (fixture publique), pas un écran de capture. L'intégration WASM dans les parcours réels de l'application reste à faire.
 - Maturité : usable
 - Exposition : spec-published
 - Confiance : medium

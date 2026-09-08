@@ -13,8 +13,9 @@ Pure Rust/WASM implementation of the locked authorities in
 - one-shot plaintext and Context content are capped at 16 MiB; hostile raw inputs are capped at 22,370,044 bytes;
 - Context v2 enforces export-scoped IDs, graph closure, binary64/JCS, depth 64, 100,000 JSON nodes, and 16,384 total links;
 - WebAssembly linear memory has an explicit 512 MiB maximum verified from the built module;
-- wasm32 requires SIMD128 for the pinned SHA-256 backend, while AES-256 uses the vendored RustCrypto
-  constant-time `fixslice64` implementation selected by the audited one-line backend patch;
+- wasm32 requires SIMD128 for the pinned SHA-256 backend, while AES-256 uses RustCrypto aes 0.9.3
+  from the registry: its constant-time 64-bit fixsliced backend is the one `cpubits` selects on
+  wasm32, asserted at compile time in `crypto.rs`;
 - large envelope strings are borrowed during open, ciphertext is decoded only after KDF memory is
   released, and seal emits the exact canonical envelope without duplicate Base64/JCS buffers;
 - only the closed WIT `error-code` crosses the boundary;

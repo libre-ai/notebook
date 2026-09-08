@@ -39,6 +39,16 @@ const _: () = assert!(
     "wasm32 must compile the 64-bit fixsliced AES backend"
 );
 
+// Belt over the heuristic above: `.cargo/config.toml` pins the width
+// explicitly (`--cfg cpubits="64"`) for wasm32, so the backend no longer
+// depends on cpubits' promotion rule at all. A build that lost that flag —
+// `RUSTFLAGS` in the environment replaces the whole config list, taking
+// `+simd128` with it — stops here rather than shipping a different backend.
+#[cfg(all(target_arch = "wasm32", not(cpubits = "64")))]
+compile_error!(
+    "wasm32 builds must carry `--cfg cpubits=\"64\"` from .cargo/config.toml (fixslice width belt)"
+);
+
 const AAD_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/aad";
 const DIGEST_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/digest";
 const JCS_METADATA_RESERVE: usize = 1024;

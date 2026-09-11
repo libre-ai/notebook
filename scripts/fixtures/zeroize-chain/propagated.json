@@ -1,0 +1,16 @@
+{
+  "packages": [
+    { "id": "registry+aes@0.9.3", "name": "aes", "version": "0.9.3" },
+    { "id": "registry+aes-gcm@0.11.1", "name": "aes-gcm", "version": "0.11.1" },
+    { "id": "registry+ghash@0.6.0", "name": "ghash", "version": "0.6.0" },
+    { "id": "registry+polyval@0.7.3", "name": "polyval", "version": "0.7.3" }
+  ],
+  "resolve": {
+    "nodes": [
+      { "id": "registry+aes@0.9.3", "features": ["zeroize"] },
+      { "id": "registry+aes-gcm@0.11.1", "features": ["aes", "zeroize"] },
+      { "id": "registry+ghash@0.6.0", "features": ["zeroize"] },
+      { "id": "registry+polyval@0.7.3", "features": ["hazmat", "zeroize"] }
+    ]
+  }
+}

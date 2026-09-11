@@ -1,5 +1,5 @@
-use aes_gcm::aead::{AeadInPlace, KeyInit};
-use aes_gcm::{Aes256Gcm, Nonce, Tag};
+use aes_gcm::Aes256Gcm;
+use aes_gcm::aead::{AeadInOut, KeyInit, Nonce, Tag};
 use argon2::{Algorithm, Argon2, Block, Params, Version};
 use base64::Engine;
 use base64::engine::general_purpose::STANDARD;
@@ -12,6 +12,42 @@ use crate::canonical::serialize_jcs;
 use crate::error::ErrorCode;
 use crate::model::{ENVELOPE_SCHEMA_VERSION, EnvelopeKdf, KDF_ALGORITHM};
 use crate::validate::{GCM_TAG_BYTES, KEY_BYTES};
+
+// Compile-time proof of the wipe chain this crate relies on (K4, crypto at
+// rest): the AEAD and its block cipher must implement `ZeroizeOnDrop`. aes-gcm
+// 0.10 only wipes its temporary GHASH key, so this fails to compile there; a
+// future bump that drops the `zeroize` feature anywhere on the chain fails
+// here instead of silently keeping key schedules in memory.
+const _: () = {
+    const fn assert_zeroize_on_drop<T: zeroize::ZeroizeOnDrop>() {}
+    assert_zeroize_on_drop::<Aes256Gcm>();
+    assert_zeroize_on_drop::<aes::Aes256>();
+};
+
+// The fixsliced AES backend selects its word width through `cpubits!`
+// (block-ciphers#532); evaluating the same macro here yields the exact width
+// `aes` compiles with. wasm32 has 32-bit pointers but deterministic i64
+// arithmetic, and the 64-bit fixslice is the constant-time variant this crate
+// was qualified on — an upstream heuristic change surfaces here at compile
+// time rather than in a browser benchmark.
+cpubits::cpubits! {
+    16 | 32 => { const FIXSLICE_WORD_BITS: u32 = 32; }
+    64 => { const FIXSLICE_WORD_BITS: u32 = 64; }
+}
+const _: () = assert!(
+    !cfg!(target_arch = "wasm32") || FIXSLICE_WORD_BITS == 64,
+    "wasm32 must compile the 64-bit fixsliced AES backend"
+);
+
+// Belt over the heuristic above: `.cargo/config.toml` pins the width
+// explicitly (`--cfg cpubits="64"`) for wasm32, so the backend no longer
+// depends on cpubits' promotion rule at all. A build that lost that flag —
+// `RUSTFLAGS` in the environment replaces the whole config list, taking
+// `+simd128` with it — stops here rather than shipping a different backend.
+#[cfg(all(target_arch = "wasm32", not(cpubits = "64")))]
+compile_error!(
+    "wasm32 builds must carry `--cfg cpubits=\"64\"` from .cargo/config.toml (fixslice width belt)"
+);
 
 const AAD_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/aad";
 const DIGEST_DOMAIN: &[u8] = b"libre-ai.notebook-backup.v2/digest";
@@ -55,8 +91,9 @@ pub(crate) fn encrypt_in_place(
         .try_reserve_exact(GCM_TAG_BYTES)
         .map_err(|_| ErrorCode::ResourceLimitExceeded)?;
     let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| ErrorCode::InternalFailure)?;
+    let nonce = Nonce::<Aes256Gcm>::try_from(nonce).map_err(|_| ErrorCode::InternalFailure)?;
     let tag = cipher
-        .encrypt_in_place_detached(Nonce::from_slice(nonce), aad, plaintext.as_mut())
+        .encrypt_inout_detached(&nonce, aad, plaintext.as_mut_slice().into())
         .map_err(|_| ErrorCode::InternalFailure)?;
     plaintext.extend_from_slice(tag.as_slice());
     Ok(())
@@ -76,13 +113,12 @@ pub(crate) fn decrypt_in_place(
     let Ok(cipher) = Aes256Gcm::new_from_slice(key) else {
         return false;
     };
+    let Ok(nonce) = Nonce::<Aes256Gcm>::try_from(nonce) else {
+        return false;
+    };
+    let tag = Tag::<Aes256Gcm>::from(tag_bytes);
     cipher
-        .decrypt_in_place_detached(
-            Nonce::from_slice(nonce),
-            aad,
-            ciphertext_and_tag.as_mut(),
-            Tag::from_slice(&tag_bytes),
-        )
+        .decrypt_inout_detached(&nonce, aad, ciphertext_and_tag.as_mut_slice().into(), &tag)
         .is_ok()
 }
 

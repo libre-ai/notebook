@@ -1,2 +1,7 @@
 [target.wasm32-unknown-unknown]
-rustflags = ["-C", "target-feature=+simd128"]
+# `+simd128`: the pinned sha2 WebAssembly backend (constant-time SHA-256).
+# `cpubits="64"`: pins the fixsliced AES word width; cpubits 0.1.1 already
+# promotes wasm32 to 64 bits by heuristic, this makes it explicit and lets
+# crypto.rs refuse a build where the flag is absent. Both flags are part of
+# the qualification manifest (this file's SHA-256 is recorded by build.ts).
+rustflags = ["-C", "target-feature=+simd128", "--cfg", "cpubits=\"64\""]
